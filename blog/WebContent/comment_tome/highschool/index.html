@@ -1,0 +1,426 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>吃饭最有趣</title>
+<script src="../../js_css/jquery-3.2.1.js"></script>
+</head>
+<body style="color: olive; background-color: silver;">
+	<div class="container">
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<!-- 这里是导航栏 -->
+				<div class="row clearfix">
+					<div class="col-md-12 column">
+						<nav class="navbar navbar-default navbar-fixed-top navbar-inverse"
+							role="navigation">
+							<div class="navbar-header">
+								<button type="button" class="navbar-toggle"
+									data-toggle="collapse"
+									data-target="#bs-example-navbar-collapse-1">
+									<span class="sr-only">Toggle navigation</span> <span
+										class="icon-bar"></span> <span class="icon-bar"></span> <span
+										class="icon-bar"></span>
+								</button>
+									 <a class="navbar-brand" href="/blog/articles/">小马的窝</a>
+						</div>
+						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+							<ul class="nav navbar-nav">
+								<li class="active">
+									 <a href="/blog/articles/">文章</a>
+								</li>
+								<li>
+									 <a href="javascript:alert('没有相册');">相册</a>
+								</li><li class="dropdown"><a href="#" class="dropdown-toggle"
+										data-toggle="dropdown">想对我说什么<strong class="caret"></strong></a>
+										<ul class="dropdown-menu">
+											<li><a href="../xiaoxue/">小学同学区</a></li>
+											<li><a href="../middleschool/">初中同学区</a></li>
+											<li><a href="#">高中同学区</a></li>
+											<li><a href="../colleage/">大学同学区</a></li>
+											<li><a href="../others/">others</a></li>
+											<li class="divider"></li>
+
+											<li><a href="javascript:alert('没上过幼儿园和研究生');">幼儿园已经研究生同学区</a>
+											</li>
+
+										</ul></li>
+									<li class="dropdown"><a href="#" class="dropdown-toggle"
+										data-toggle="dropdown">其他玩意<strong class="caret"></strong></a>
+										<ul class="dropdown-menu">
+											<li><a href="#">全民K歌</a></li>
+											<li><a href="#">音乐</a></li>
+											<li><a href="#">Something else here</a></li>
+											<li class="divider"></li>
+											<li><a href="#">分割线下</a></li>
+
+										</ul></li>
+								</ul>
+								<form class="navbar-form navbar-left" role="search">
+									<div class="form-group">
+										<input type="text" class="form-control" value="我给你去百度搜" />
+									</div>
+									<button type="submit" class="btn btn-default">Submit</button>
+								</form>
+								<!-- 下面是导航栏右侧的内容 -->
+								<ul class="nav navbar-nav navbar-right">
+									<li><a href="#">login</a></li>
+									<li class="dropdown"><a href="#" class="dropdown-toggle"
+										data-toggle="dropdown">无用处<strong class="caret"></strong></a>
+										<ul class="dropdown-menu">
+											<li><a href="#">一号无用</a></li>
+											<li><a href="#">一号无用</a></li>
+											<li><a href="#">一号无用</a></li>
+											<li class="divider"></li>
+											<li><a href="#">Separated link</a></li>
+										</ul></li>
+								</ul>
+							</div>
+
+						</nav>
+					</div>
+				</div>
+				<!-- 一个引言  放一张背景图-->
+				<div
+					style="height: 200px; weight: 100%; background-image: url('/blog/image/html_hengfu3.png'); margin-top: 50px">
+					<!--  这里暂时不加文字了，之后再处理*****************？
+				<blockquote class="pull-right">
+				<p>
+					胆小人生,不易相处.　　　　　　　　　 　　  -->
+					<!-- 此处加了空格，输入法满月状态下加 -->
+					<!--
+				</p> 
+				<p>
+					年轻无为，卖马为生。  
+				</p> 
+				</blockquote>
+				  -->
+				</div>
+			</div>
+		</div>
+
+
+
+
+		<div class="row clearfix" style="margin-top: 40px">
+			<!--这是大的DIV包括body和rigth  -->
+			<!-- 评论区域 -->
+			<div class="col-md-8 column" id ="show_comment">
+
+
+		<!-- 这里开始写品论的内容-->
+		<!-- 这里用ajax来获取后台的留言数据 -->
+		<script type="text/javascript">
+			$().ready(function() {
+				//获取留言信息
+				getComment();
+				//查询更多
+				$("#moreComment").click(function () {
+					var _page_now = $("#moreComment").attr("name");
+					//alert(_page_now);
+					var page_now = parseInt(_page_now);
+					getComment(page_now);
+				});
+					
+				
+				
+			});
+			
+			
+			
+			
+	function  getComment(page_now){
+		if(page_now == null || page_now < 1){
+			page_now = 1;
+		}else{
+			page_now = page_now + 1 ;
+		}
+		$.ajax({
+			url : "/blog/CommentServlet?method=getComment&page_now="+page_now+"&com_type=2",
+				dataType : "JSON",
+				success : function(data) {
+				//	var json = jQuery.parseJSON(data); 
+				//$("#myText").text(json);
+				$.each(data,function(i,va){//这是可以的
+					//alert(va["count_all"]);i为data的索引，va为该索引的对象。
+					
+					//获取当前页，并复制到
+					$("#moreComment").attr("name",va.page_now);
+					//alert(va.page_now);
+					//对象变量名[“属性名”] 得到该对象下该属性名的属性值
+					var list = va["list"];
+					
+					//写一个存放所有评论的com_id的数组，用于后面和con_pid进行比较，如果相同，则说明，该评论有回复，就加上回复的内容
+					$.each(list,function(p,va){
+						var com_id = va.com_pid;
+						if(com_id == ""){//没有回复
+							appendToDiv(va);//直接生成评论
+						}
+					});
+					$.each(list,function(p,va){
+							var com_id = va.com_pid;
+							if(com_id != ""){//有回复
+							var html = jsonToHtml(va);
+							$("#"+com_id).children(".panel-body").append(html);
+							//$(html).insertAfter("form[name='pinglun']"); 
+							}
+					});	
+				});	
+			},
+			error : function() {
+				alert("ajax错误");
+			}
+		});
+	}
+			
+	function jsonToHtml(va){
+	var html = "";
+	html = '<div class="panel panel-danger" id = "'+va.com_id+'">'+
+			//评论title和时间
+			'<div class="panel-heading">' +
+			'<h3 class="panel-title">' +
+			'<div id="show_name">' + 
+			'<span class="glyphicon glyphicon-user" aria-hidden="true"></span>' +
+			'昵称：' + va.com_name +
+			'<div style="float: right;" id ="show_time">Tiime:'+va.com_date+'</div>' +
+			'</div>' +
+			'</h3>' +
+			'</div>' +
+			//评论内容
+			'<div class="panel-body" id="show_content"><div id="show_other"></div>　　　'+va.com_content+'</div>' +
+			//评论未
+			'<div class="panel-footer" align="left">' +
+			'<div align="right">' +
+			'<span class="glyphicon glyphicon-hand-right" >com_id:'+va.com_id+'</span>' +
+			'<span class="glyphicon glyphicon-send" aria-hidden="true"></span>' +
+			'<small><button type="button" class="btn btn-sm" id="replay'+va.com_id+'" onclick="replay('+va.com_id+');">回复</button></small>' +
+			'</div>'+
+			'</div>'
+			'</div>';
+	return html;
+	}
+	function appendToDiv(va){
+		var html = jsonToHtml(va);
+		$(html).insertBefore("#more"); 
+	}
+		
+function replay(com_id) {//这里把回复留言的com_id拿到，然后直接在该com_id下的id为show_content得div下追加相应的评论功能的表单
+	var html = "";
+	html = 	'<form class="form-horizontal" role="form" style="background-color: activeborder;"  ' +
+			'action="/blog/CommentServlet" target="tiDai">'  + 
+			'<input type="hidden" name="method" value="updataComment"/>' +	
+			'<div class="form-group">' +
+		    '<label for="inputEmail3" class="col-sm-2 control-label">昵称</label>' +
+		    '<div class="col-sm-4">' +
+			'<input type="text" name="name"/>' +
+			'</div>' +
+			'</div>' +
+			'<div class="form-group">' +
+		 	'<label for="inputPassword3" class="col-sm-2 control-label">内容</label>' +
+			'<div class="col-sm-4">' +
+			'<textarea rows="9" cols="75%" id="textarea" name="com_content"></textarea>' +
+			'</div>' +
+			'</div>' +
+			'<div class="form-group">' +
+			'<div class="col-sm-offset-2 col-sm-4"   style="float: right;">'+
+			'<input type="submit" class="btn" id="submit'+com_id+'" onclick="return submitComment('+com_id+');" value="提交"/>'+
+			'</div>'+
+			'</div>'+
+			'<input type="hidden" name="com_pid" value="'+com_id+'"/>'+
+			'<input type="hidden" name="com_type" value="2"/>'+
+			'</form>' +
+			'<iframe name="tiDai" style="display:none;"></iframe>';
+
+	$("#"+com_id).children(".panel-body").append(html);
+	
+}
+	
+	
+	//form完成提交表单和加载到页面的两项任务
+	function submitForm() {
+		$("form[name='pinglun']").submit();
+		submitComment(0);
+	}
+	
+	function submitComment(com_id){
+		if(com_id > 0 ){//这里是对留言的回复做显示（）
+				var $name = $("#"+com_id).children("div:eq(1)").children("form").children("div:eq(0)").children("div").children("input");
+				var $content = $("#"+com_id).children("div:eq(1)").children("form").children("div:eq(1)").children("div").children("textarea");
+					var html = "";
+					html = '<div class="panel panel-danger" id = "">'+
+					//评论title和时间
+					'<div class="panel-heading">' +
+					'<h3 class="panel-title">' +
+					'<div id="show_name">' + 
+					'<span class="glyphicon glyphicon-user" aria-hidden="true"></span>' +
+					'昵称：' + $name.val() +
+					'<div style="float: right;" id ="show_time">Tiime:'+new Date()+'</div>' +
+					'</div>' +
+					'</h3>' +
+					'</div>' +
+					//评论内容
+					'<div class="panel-body" id="show_content"><div id="show_other"></div>　　　'+
+					$content.val()+'</div>' +
+					'</div>'
+					'</div>';
+				$("#"+com_id).children(".panel-body").append(html);
+				//移除这个form元素
+				$("#"+com_id).children("div:eq(1)").children("form").remove();
+				
+			}else{//这里就是直接写留言，然后显示
+				
+				var form_$ = $("form[name='pinglun']");//这里是评论的父节点
+					var html = "";
+					html = '<div class="panel panel-danger">'+
+					//评论title和时间
+					'<div class="panel-heading">' +
+					'<h3 class="panel-title">' +
+					'<div id="show_name">' + 
+					'<span class="glyphicon glyphicon-user" aria-hidden="true"></span>' +
+					'昵称：' + form_$.children("div:eq(0)").children("div").children("input").val() +
+					'<div style="float: right;" id ="show_time">Tiime:'+new Date()+'</div>' +
+					'</div>' +
+					'</h3>' +
+					'</div>' +
+					//评论内容
+					'<div class="panel-body" id="show_content"><div id="show_other"></div>　　　'+
+					form_$.children("div:eq(1)").children("div").children("textarea").val()+'</div>' +
+					
+					'</div>'
+					'</div>';
+				$(html).insertAfter(form_$);
+				form_$.children("div:eq(0)").children("div").children("input").val("");
+				form_$.children("div:eq(1)").children("div").children("textarea").val("");
+				
+			}
+	}
+	
+	
+		</script>
+
+<!-- //这里是评论内容内容模板 -->
+<!-- 				<div class="panel panel-danger" id="show"> -->
+<!-- 					<div class="panel-heading"> -->
+<!-- 						<h3 class="panel-title"> -->
+<!-- 							<div id="show_name"> -->
+<!-- 								<span class="glyphicon glyphicon-user" aria-hidden="true"></span> -->
+<!-- 								昵称： -->
+<!-- 								<div style="float: right;" id ="show_time">Tiime:</div> -->
+<!-- 							</div> -->
+<!-- 						</h3> -->
+<!-- 					</div> -->
+<!-- 					我在这里加了两个空格 -->
+<!-- 					<div class="panel-body" id="show_content">　　　</div> -->
+<!-- 					<div class="panel-footer" align="left"> -->
+<!-- 						<div align="right"> -->
+<!-- 							<span class="glyphicon glyphicon-send" aria-hidden="true"></span> -->
+<!-- 							<small><button type="button" class="btn btn-sm">回复</button></small> -->
+<!-- 						</div> -->
+<!-- 					</div> -->
+<!-- 				</div> -->
+
+<!-- 这是另一款评论表单的样式 --><!-- 算了，丑一点没关系 -->
+<!-- <form class="form-horizontal" role="form" > -->
+<!-- 	<div id="inputArea" style="width: 100%"> -->
+<!--     <label for="txtName"> -->
+<!--         用户名：</label> -->
+<!--     <input id="Text16" type="text" value="srcfans.com" /> -->
+<!--     <label for="txtEmail"> Email地址：<div> <input id="Text17" type="text" /></div></label> -->
+<!--     <label for="txtWebsite">博客地址： <input id="Text18" type="text" /></label> -->
+<!--     <label for="txtComment"> 内容：<textarea id="Textarea6" rows="4" cols="30"></textarea></label> -->
+<!--     <button type="submit" class="btn btn-rigth">提交</button> -->
+<!--     </div>	 -->
+<!--     </form>		 -->
+<!-- 这是另一款评论表单的样式 结束-->
+<!-- 提示  -->
+			<div class="container-fluid">
+				<div class="row-fluid">
+					<div class="span12">
+						<div class="alert alert-success">
+							 <button type="button" class="close" data-dismiss="alert">×</button>
+							<h4>
+								上帝很美：
+							</h4> <strong>　　　　心爱的留言功能终于完美完成了....</strong>
+						</div>
+					</div>
+				</div>
+			</div>
+
+<!-- 这是另一款评论表单的样式 开始-->
+			<form class="form-horizontal" role="form" action="/blog/CommentServlet" method="updataComment" name="pinglun" target="tiDai">
+			<input type="hidden" name="method" value="updataComment"/>
+				<div class="form-group" >
+					 <label for="inputEmail3" class="col-sm-2 control-label">昵称</label>
+					<div class="col-sm-4">
+					<input type="text" name="name"/>
+					</div>
+				</div>
+				<div class="form-group">
+					 <label for="inputPassword3" class="col-sm-2 control-label">内容</label>
+					<div class="col-sm-4">
+						<textarea rows="9" cols="75%"  name="com_content"></textarea>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-4"  style="float: right;">
+						 <input type="button" class="btn btn-rigth"  onclick="return submitForm();"  value="提交" />
+					</div>
+				</div>
+				<input type="hidden" name="com_pid" value="no"/>
+				<input type="hidden" name="com_type" value="2"/>
+			</form>
+			<iframe name="tiDai" style="display:none;"></iframe>
+<!-- 这是另一款评论表单的样式 结束-->
+
+				<!-- 分页区开始 -->
+
+
+				<!-- 分页区结束-->
+
+		<div class="container-fluid" id="more">
+			<div class="row-fluid">
+				<div class="span12">
+					 <button class="btn btn-success btn-block" type="button" id="moreComment" name="">查看更多留言</button>
+				</div>
+			</div>
+		</div>
+				<!-- 评论部分结束 -->
+
+
+			</div>
+
+			<!-- 右侧内容开始 -->
+			<div class="col-md-4 column" id="right">
+
+			
+					<div id="page2"></div>
+					<div id="page1"></div>
+					<div id="page3"></div>
+					 <script>
+		          $("#page1").load("/blog/common/youlian.html");
+		          $("#page2").load("/blog/common/fenyeka.html");
+		          $("#page3").load("/blog/common/guidang.html");
+   					 </script>
+
+
+			</div>
+		</div>
+		<div class="container-fluid">
+			<div class="row-fluid">
+				<div class="span12">
+					<blockquote class="pull-right">
+						<p>天空飘来五个字</p>
+						<small>ｓｔａｔｉｃ＿ｍｋｋ</small>
+					</blockquote>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+</body>
+<link href="../../js_css/from.css" rel="stylesheet" />
+<link href="../../js_css/bootstrap.min.css" rel="stylesheet">
+<script src="../../js_css/jquery.min.js"></script>
+<script src="../../js_css/bootstrap.min.js"></script>
+</html>
