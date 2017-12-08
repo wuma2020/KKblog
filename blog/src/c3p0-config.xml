@@ -7,8 +7,8 @@
 					]]>
 		</property>
 		<property name="driverClass">com.mysql.jdbc.Driver</property>
-		<property name="user">root</property>
-		<property name="password">password</property>
+		<property name="root">***</property>
+		<property name="password">***</property>
 		
 		<property name="acquireIncrement">3</property>
 		<property name="initialPoolSize">10</property>
