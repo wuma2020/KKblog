@@ -1,0 +1,66 @@
+use blog;
+
+CREATE TABLE IF NOT EXISTS `article`(
+   `art_id` INT UNSIGNED AUTO_INCREMENT,
+   `art_type` INT NOT NULL,
+   `art_title` VARCHAR(40) NOT NULL,
+   `art_author` VARCHAR(20) NOT NULL,
+   `art_date` DATE,
+   `art_biaoqian` varchar(20),
+   `art_content` varchar(10000) ,
+   `art_mark` varchar(10000),
+   PRIMARY KEY ( `art_id` )
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `Comment`(
+   `com_id` INT UNSIGNED AUTO_INCREMENT,
+   `art_id` int ,
+   `com_name` varchar(100),
+   `com_date` varchar(40),
+   `com_content` varchar(3000) ,
+   `com_type` int ,
+   `com_pid` varchar(30),
+   PRIMARY KEY ( `com_id` )
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `Image`(
+ `image_id`  INT UNSIGNED AUTO_INCREMENT,
+  `url` varchar(100),
+  PRIMARY KEY ( `image_id` )
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+/*这里是向文章数据库中插入数据*/
+INSERT INTO  blog.article (art_type,art_author,art_date,art_biaoqian,art_content,art_title)  
+VALUES(1,'as','2015/5/5','技术','测试，content','测试title');
+/*这里要插入comment的内容了*/
+insert into blog.comment(art_id,com_name,com_date,com_content) 
+values(2,'asdas','2022/2/25','这里是com_contentd的内容');
+
+/*这个是查询下一篇内容的语句*/
+SELECT * FROM blog.article WHERE art_id >2 limit 1;
+/*这个是查询上一篇内容的语句,这里要查询出具体的行数，然后用行数来查询该行的内容*/
+/*所以完整的内容应该是：*/
+SELECT count(*) FROM blog.article where art_id < 2; /*结果为int P   k = p - 1;*/
+
+use blog;
+
+
+create table weixin (
+`mmessageId`  INT AUTO_INCREMENT PRIMARY key not null,
+`ToUserName` varchar(100) ,
+`FromUserName` varchar(100),
+`CreateTime` varchar(50) ,
+`MsgType` varchar(40),
+`MsgId` varchar(50),
+`PicUrl` varchar(400),
+`Title` varchar(50),
+`Description` varchar(100),
+`Url` varchar(200),
+`Location_x` varchar(20),
+`Location_y` varchar(20),
+`Scale` varchar(30),
+`Label` varchar(100), 
+`Content` varchar(1000),
+`MediaId` varchar(100),
+`ThumbMediaId` varchar(100),
+`Format` varchar(30)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
